@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:photos_app/Module/Screens/AlbumsScreen/AlbumScreen.dart';
+import 'package:photos_app/Module/Screens/MainScreen/MainScreen.dart';
 
 
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration(seconds: 2), () {
-      Get.off(() => AlbumScreen());
+      Get.off(() => MainScreen());
     });
     return Scaffold(
       body: Stack(

@@ -1,25 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../Widgets/AppBar.dart';
-import 'AlbumsScreenController.dart';
+import 'package:photos_app/Module/Screens/AlbumsScreen/PhotosScreen/PhotosScreenController.dart';
+import '../../../../Model/PhotosT_Model.dart';
+import '../../../../Widgets/AppBar.dart';
 
-final AlbumScreenController controller = Get.find();
+final PhotosScreenController controller = Get.find();
 
-class AlbumScreen extends StatelessWidget {
-  const AlbumScreen({Key? key}) : super(key: key);
+class PhotoScreen extends StatelessWidget {
+  final RxList<PhotosT_Model> photosArray;
 
+  const PhotoScreen({super.key, required this.photosArray});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: photosList(controller),
+      body: photosList(controller, photosArray),
     );
   }
 }
 
-Widget photosList(controller) {
-  return Obx(() => controller.isLoading.value
+Widget photosList(controller,photosArray) {
+
+  return Obx(() =>
+      controller.isLoading.value
       ? const Center(child: CircularProgressIndicator())
       : Column(
           children: [
@@ -30,10 +34,10 @@ Widget photosList(controller) {
                     const Divider(
                   color: Colors.white,
                 ),
-                itemCount: controller.photosList.length,
+                itemCount: photosArray.length,
                 itemBuilder: (BuildContext context, int index) {
                   return PhotoCard(
-                    imagePath: "${controller.photosList[index].url}",
+                    imagePath: "${photosArray[index].url}",
                   );
                 },
               ),

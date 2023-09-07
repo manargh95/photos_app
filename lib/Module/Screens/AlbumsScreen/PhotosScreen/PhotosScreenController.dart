@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:photos_app/Model/AlbumsT_Model.dart';
-import '../../../../Api/DioHelper.dart';
-import '../../../Model/PhotosT_Model.dart';
+import 'package:photos_app/Model/PhotosT_Model.dart';
 
-class AlbumScreenController extends GetxController {
-  RxList<AlbumsT_Model> albumsList = <AlbumsT_Model>[].obs;
+import '../../../../Api/DioHelper.dart';
+
+class PhotosScreenController extends GetxController {
   RxList<PhotosT_Model> photosList = <PhotosT_Model>[].obs;
   RxBool isLoading = false.obs;
+  int id = 0;
 
-  void fetchDataById(int id) async {
-    isLoading.value = true;
-
+  void fetchDataById() async {
+    print("!!!!!!!!!!!!");
     try {
       final dio = DioHelper();
 
@@ -20,8 +19,10 @@ class AlbumScreenController extends GetxController {
       if (response.statusCode == 200) {
         final responseData = response.data as List<dynamic>;
         final testModels =
-        responseData.map((json) => PhotosT_Model.fromJson(json)).toList();
+            responseData.map((json) => PhotosT_Model.fromJson(json)).toList();
         photosList.value = testModels;
+        print("!!!!!!!!!!!!");
+        print(photosList.value);
       } else {
         print('Error');
       }
@@ -32,19 +33,19 @@ class AlbumScreenController extends GetxController {
     }
   }
 
-  void fetchData() async {
+  void fetchAllData() async {
     isLoading.value = true;
 
     try {
       final dio = DioHelper();
 
-      final response = await dio.get(
-          'https://jsonplaceholder.typicode.com/albums'
-      );
+      final response =
+          await dio.get('https://jsonplaceholder.typicode.com/photos');
       if (response.statusCode == 200) {
         final responseData = response.data as List<dynamic>;
-        final testModels = responseData.map((json) => AlbumsT_Model.fromJson(json)).toList();
-        albumsList.value = testModels;
+        final testModels =
+            responseData.map((json) => PhotosT_Model.fromJson(json)).toList();
+        photosList.value = testModels;
       } else {
         print('Error');
       }
@@ -57,7 +58,7 @@ class AlbumScreenController extends GetxController {
 
   @override
   void onInit() {
-    fetchData();
+    fetchDataById();
     // addLoadMoreTrigger();
     super.onInit();
   }
@@ -77,19 +78,19 @@ class AlbumScreenController extends GetxController {
 
   loadMore() async {
     if (stopLoadMore) return;
-    RxList<AlbumsT_Model>? tAlbums;
+    RxList<PhotosT_Model>? tPhotos;
     isLoadingMore.value = true;
     update();
     final dio = DioHelper();
 
     try {
-      final response = await dio.get(
-          'https://jsonplaceholder.typicode.com/albums'
-      );
+      final response =
+          await dio.get('https://jsonplaceholder.typicode.com/photos');
       if (response.statusCode == 200) {
         final responseData = response.data as List<dynamic>;
-        final testModels = responseData.map((json) => AlbumsT_Model.fromJson(json)).toList();
-        tAlbums = testModels.obs;
+        final testModels =
+            responseData.map((json) => PhotosT_Model.fromJson(json)).toList();
+        tPhotos = testModels.obs;
       }
     } catch (error) {
       print(error.toString());
@@ -97,8 +98,8 @@ class AlbumScreenController extends GetxController {
       isLoadingMore.value = false;
     }
 
-    if (tAlbums!.isEmpty) stopLoadMore = true;
-    albumsList.addAll(tAlbums);
+    if (tPhotos!.isEmpty) stopLoadMore = true;
+    photosList.addAll(tPhotos);
 
     update();
   }
